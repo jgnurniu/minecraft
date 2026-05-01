@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft GUI - Jarvis OS Edition</title>
+    <title>JARVIS OS — Login</title>
+    
+    <!-- Fuente Pixelada de Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --mc-gui-bg: #c6c6c6;
-            --mc-button-bg: #8b8b8b;
-            --mc-button-hover: #70b0ff; /* Azul de selección de Minecraft */
-            --shadow-color: rgba(0, 0, 0, 0.7);
+            --mc-gray-dark: #313131;
+            --mc-gray-light: #c6c6c6;
+            --mc-border-light: #ffffff;
+            --mc-border-shadow: #000000;
         }
 
         * {
@@ -19,102 +23,112 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'VT323', monospace;
-            image-rendering: pixelated;
+            image-rendering: pixelated; /* Mantiene los bordes nítidos */
         }
 
         body, html {
             height: 100%;
+            width: 100%;
             overflow: hidden;
             background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-    
+        /* --- CONTENEDOR DE VIDEO ROBUSTO --- */
+        .video-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-color: #111; /* Fondo de respaldo */
+        }
 
-      /* Aseguramos que el video ocupe todo sin dejar espacios */
-    .video-container video {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        min-width: 100%;
-        min-height: 100%;
-        width: auto;
-        height: auto;
-        transform: translate(-50%, -50%);
-        object-fit: cover;
-    }
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Asegura que cubra la pantalla sin deformarse */
+        }
 
-        /* Efecto de viñeta para dar oscuridad a los bordes */
+        /* Capa de viñeta y oscuridad para mejorar visibilidad */
         .vignette {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.8) 100%);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -1;
+            background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
         }
 
-        .overlay {
-            width: 100%; height: 100%;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
+        /* --- INTERFAZ (GUI) --- */
+        .container {
+            text-align: center;
+            z-index: 10;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
         }
 
-        /* Logo y Splash Text */
-        .logo-container {
+        .logo-area {
             position: relative;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
 
-        .main-title {
+        .title {
+            font-size: 5.5rem;
             color: #fff;
-            font-size: 5rem;
-            text-shadow: 5px 5px 0px #3f3f3f;
-            letter-spacing: 4px;
+            text-shadow: 6px 6px 0px #3f3f3f;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        .splash-text {
+        .splash {
             position: absolute;
-            bottom: -20px; right: -40px;
+            right: -20px;
+            bottom: -15px;
             color: #ffff00;
             font-size: 1.8rem;
             text-shadow: 2px 2px 0px #3f3f00;
             transform: rotate(-20deg);
-            animation: splashAnim 0.5s infinite alternate;
+            animation: bounce 0.4s infinite alternate;
         }
 
-        @keyframes splashAnim {
+        @keyframes bounce {
             from { transform: rotate(-20deg) scale(1); }
-            to { transform: rotate(-20deg) scale(1.1); }
+            to { transform: rotate(-20deg) scale(1.15); }
         }
 
-        /* --- LA CAJA DE GUI --- */
-        .login-card {
-            /* Textura de piedra simulada con CSS */
-            background: 
-                linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),
-                repeating-conic-gradient(#4d4d4d 0% 25%, #313131 0% 50%) 
-                50% / 4px 4px;
+        /* --- TARJETA DE LOGIN --- */
+        .mc-card {
+            background-color: var(--mc-gray-dark);
+            /* Textura de píxeles simulada */
+            background-image: repeating-conic-gradient(#4d4d4d 0% 25%, #313131 0% 50%);
+            background-size: 4px 4px;
             
             border: 4px solid #000;
-            box-shadow: inset 4px 4px 0px #8b8b8b, inset -4px -4px 0px #212121;
-            padding: 40px;
-            width: 380px;
-            text-align: center;
+            box-shadow: inset 4px 4px 0px #555, inset -4px -4px 0px #1a1a1a;
+            padding: 30px;
+            color: #aaaaaa;
         }
 
-        .form-group {
-            margin-bottom: 25px;
+        .field {
+            margin-bottom: 20px;
             text-align: left;
         }
 
-        .form-group label {
+        .field label {
             display: block;
-            color: #e0e0e0;
             font-size: 1.5rem;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
+            color: #e0e0e0;
             text-shadow: 2px 2px 0px #000;
         }
 
-        /* Inputs auténticos */
-        .form-group input {
+        .field input {
             width: 100%;
             padding: 10px;
             background-color: #000;
@@ -124,97 +138,104 @@
             outline: none;
         }
 
-        .form-group input:focus {
+        .field input:focus {
             border-color: #fff;
         }
 
-        /* BOTÓN MINECRAFT MEJORADO */
-        .btn-mc {
+        /* --- BOTÓN AUTÉNTICO --- */
+        .mc-btn {
             width: 100%;
             padding: 12px;
             background-color: #6d6d6d;
-            border: 3px solid #000;
+            border: 4px solid #000;
             color: #e0e0e0;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             text-transform: uppercase;
             cursor: pointer;
-            position: relative;
-            box-shadow: inset 3px 3px 0px #aaa, inset -3px -3px 0px #333;
+            box-shadow: inset 4px 4px 0px #aaa, inset -4px -4px 0px #333;
+            transition: none; /* Los botones de MC no tienen transiciones suaves */
         }
 
-        .btn-mc:hover {
-            background-color: #7da4ff; /* Azul cuando pasas el mouse */
+        .mc-btn:hover {
+            background-color: #7da4ff; /* Azul de selección Java Edition */
             color: #fff;
             border-color: #fff;
-            box-shadow: inset 3px 3px 0px #c6d9ff, inset -3px -3px 0px #3b5ba5;
+            box-shadow: inset 4px 4px 0px #c6d9ff, inset -4px -4px 0px #3b5ba5;
         }
 
-        .btn-mc:active {
-            transform: scale(0.98);
+        .mc-btn:active {
+            box-shadow: inset 4px 4px 0px #1a1a1a, inset -4px -4px 0px #555;
+            padding-top: 14px;
+            padding-bottom: 10px;
         }
 
     </style>
 </head>
 <body>
 
-    <div class="video-container">
-        <video autoplay muted loop playsinline>
+    <!-- Fondo de Video -->
+    <div class="video-wrapper">
+        <video autoplay muted loop playsinline preload="auto">
             <source src="fondo1.mp4" type="video/mp4">
         </video>
     </div>
+    
     <div class="vignette"></div>
 
-    <div class="overlay">
-        <div class="logo-container">
-            <h1 class="main-title">JARVIS OS</h1>
-            <div class="splash-text" id="splash">¡Programando!</div>
+    <div class="container">
+        <div class="logo-area">
+            <h1 class="title">JARVIS OS</h1>
+            <div class="splash" id="splash">¡Crafteando!</div>
         </div>
 
-        <div class="login-card">
+        <div class="mc-card">
             <form id="loginForm">
-                <div class="form-group">
+                <div class="field">
                     <label>Nombre de Usuario</label>
-                    <input type="text" placeholder="..." required autocomplete="off">
+                    <input type="text" required spellcheck="false" autocomplete="off">
                 </div>
-                <div class="form-group">
+                <div class="field">
                     <label>Contraseña</label>
-                    <input type="password" placeholder="..." required>
+                    <input type="password" required>
                 </div>
-                <button type="submit" class="btn-mc" id="btnClick">Entrar al Mundo</button>
+                <button type="submit" class="mc-btn" id="btnSound">Entrar al Mundo</button>
             </form>
         </div>
     </div>
 
     <script>
-        // Mensajes aleatorios para el Splash Text
-        const splashes = ["¡Hola jgnurniu!", "100% Real No Fake", "Usando TinyLlama", "Full Stack Kids", "Crafteando código"];
-        document.getElementById('splash').innerText = splashes[Math.floor(Math.random() * splashes.length)];
+        // 1. Textos aleatorios del Splash
+        const frases = ["¡Hola jgnurniu!", "100% Pixelado", "Cuidado con los Creepers", "Jarvis v8.0", "Python & Bloques"];
+        document.getElementById('splash').innerText = frases[Math.floor(Math.random() * frases.length)];
 
-        // Sonido de click auténtico (Sintetizado para no necesitar archivos externos)
-        function playClickSound() {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
+        // 2. Generador de sonido "Pop" (Click de Minecraft)
+        function playPop() {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = context.createOscillator();
+            const gain = context.createGain();
 
-            oscillator.type = 'square';
-            oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.1);
-            
-            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(150, context.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(40, context.currentTime + 0.1);
 
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
+            gain.gain.setValueAtTime(0.2, context.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.1);
 
-            oscillator.start();
-            oscillator.stop(audioCtx.currentTime + 0.1);
+            osc.connect(gain);
+            gain.connect(context.destination);
+
+            osc.start();
+            osc.stop(context.currentTime + 0.1);
         }
 
-        document.getElementById('btnClick').addEventListener('mousedown', playClickSound);
+        // Asignar sonido al botón
+        document.getElementById('btnSound').addEventListener('mousedown', playPop);
 
+        // 3. Manejo del formulario
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            alert("Iniciando sesión en el servidor...");
+            // Aquí conectarías con tu backend PHP
+            console.log("Validando credenciales...");
         });
     </script>
 </body>
