@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Login</title>
-    
-    <!-- 1. IMPORTAR UNA FUENTE QUE SE PAREZCA A MINECRAFT -->
-    <!-- VT323 es una buena opción gratuita de Google Fonts que tiene ese toque pixelado -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Minecraft GUI - Jarvis OS Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --mc-gui-bg: #c6c6c6;
+            --mc-button-bg: #8b8b8b;
+            --mc-button-hover: #70b0ff; /* Azul de selección de Minecraft */
+            --shadow-color: rgba(0, 0, 0, 0.7);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            /* Aplicar la fuente pixelada a todo */
             font-family: 'VT323', monospace;
-            /* Esto ayuda a que los textos pixelados se vean más nítidos */
-            image-rendering: pixelated; 
+            image-rendering: pixelated;
         }
 
         body, html {
@@ -28,134 +28,125 @@
             background-color: #000;
         }
 
-        /* Contenedor del video nativo (sin cambios) */
+        /* Video de fondo con efecto de viñeta */
         .video-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
         }
 
         .video-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            width: 100%; height: 100%; object-fit: cover;
         }
 
-        /* Overlay para oscurecer el video (sin cambios) */
-        .overlay {
+        /* Efecto de viñeta para dar oscuridad a los bordes */
+        .vignette {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4); /* Un poco más claro para ver el video */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.8) 100%);
+            z-index: -1;
         }
 
-        /* --- NUEVO DISEÑO DE LA TARJETA DE LOGIN ESTILO MINECRAFT --- */
+        .overlay {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+        }
+
+        /* Logo y Splash Text */
+        .logo-container {
+            position: relative;
+            margin-bottom: 50px;
+        }
+
+        .main-title {
+            color: #fff;
+            font-size: 5rem;
+            text-shadow: 5px 5px 0px #3f3f3f;
+            letter-spacing: 4px;
+        }
+
+        .splash-text {
+            position: absolute;
+            bottom: -20px; right: -40px;
+            color: #ffff00;
+            font-size: 1.8rem;
+            text-shadow: 2px 2px 0px #3f3f00;
+            transform: rotate(-20deg);
+            animation: splashAnim 0.5s infinite alternate;
+        }
+
+        @keyframes splashAnim {
+            from { transform: rotate(-20deg) scale(1); }
+            to { transform: rotate(-20deg) scale(1.1); }
+        }
+
+        /* --- LA CAJA DE GUI --- */
         .login-card {
-            /* Textura base: gris oscuro, pero con un borde doble pixelado */
-            background-color: #313131; /* Gris oscuro de fondo de menú */
-            border: 4px solid #000000; /* Borde exterior negro */
-            /* Efecto de borde biselado interior gris claro */
-            box-shadow: inset 4px 4px 0px #555555, inset -4px -4px 0px #1a1a1a;
+            /* Textura de piedra simulada con CSS */
+            background: 
+                linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),
+                repeating-conic-gradient(#4d4d4d 0% 25%, #313131 0% 50%) 
+                50% / 4px 4px;
             
-            padding: 2.5rem;
-            border-radius: 0; /* Minecraft no tiene bordes redondeados */
-            width: 100%;
-            max-width: 420px;
-            color: #AAAAAA; /* Gris claro de texto por defecto */
+            border: 4px solid #000;
+            box-shadow: inset 4px 4px 0px #8b8b8b, inset -4px -4px 0px #212121;
+            padding: 40px;
+            width: 380px;
             text-align: center;
         }
 
-        /* Título "BIENVENIDO" en el estilo de los títulos de Minecraft */
-        .login-card h2 {
-            color: #FFFFFF; /* Texto blanco puro */
-            text-shadow: 3px 3px 0px #3F3F3F; /* Sombra de texto pixelada */
-            font-size: 3.5rem; /* Muy grande */
-            margin-bottom: 1.5rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 25px;
             text-align: left;
         }
 
-        /* Estilo para las etiquetas "Usuario" y "Contraseña" */
         .form-group label {
             display: block;
+            color: #e0e0e0;
+            font-size: 1.5rem;
             margin-bottom: 8px;
-            font-size: 1.4rem;
-            color: #AAAAAA;
-            text-shadow: 2px 2px 0px #1a1a1a;
+            text-shadow: 2px 2px 0px #000;
         }
 
-        /* --- NUEVO DISEÑO DE LOS INPUTS ESTILO MINECRAFT --- */
+        /* Inputs auténticos */
         .form-group input {
             width: 100%;
-            padding: 12px;
-            /* Borde pixelado oscuro */
-            border: 3px solid #000000;
-            box-shadow: inset 2px 2px 0px #1a1a1a; /* Sombra interior */
-            
-            border-radius: 0; /* Sin bordes redondeados */
-            background-color: #1a1a1a; /* Fondo muy oscuro */
-            color: #E0E0E0; /* Texto gris muy claro */
+            padding: 10px;
+            background-color: #000;
+            border: 2px solid #a0a0a0;
+            color: #fff;
             font-size: 1.4rem;
             outline: none;
         }
 
-        /* Estilo para el placeholder (Ingresa tu usuario) */
-        .form-group input::placeholder {
-            color: #555555; /* Gris muy oscuro, como texto desactivado */
-        }
-
-        /* Efecto al hacer foco en el input */
         .form-group input:focus {
-            border-color: #FFFFFF; /* Borde blanco al seleccionar */
+            border-color: #fff;
         }
 
-        /* --- NUEVO DISEÑO DEL BOTÓN ESTILO MINECRAFT --- */
-        button {
+        /* BOTÓN MINECRAFT MEJORADO */
+        .btn-mc {
             width: 100%;
-            padding: 14px;
-            font-size: 1.6rem;
-            font-weight: normal; /* La fuente ya tiene peso */
-            color: #E0E0E0;
-            text-shadow: 2px 2px 0px #1a1a1a;
-            cursor: pointer;
+            padding: 12px;
+            background-color: #6d6d6d;
+            border: 3px solid #000;
+            color: #e0e0e0;
+            font-size: 1.5rem;
             text-transform: uppercase;
-
-            /* El truco del botón de Minecraft: Fondo gris con bordes pixelados biselados */
-            background-color: #7d7d7d;
-            border: 4px solid #000000;
-            border-radius: 0;
-            box-shadow: inset 4px 4px 0px #aaaaaa, inset -4px -4px 0px #555555;
-            
-            transition: all 0.1s ease; /* Transición rápida */
+            cursor: pointer;
+            position: relative;
+            box-shadow: inset 3px 3px 0px #aaa, inset -3px -3px 0px #333;
         }
 
-        /* Efecto al pasar el mouse por encima (Hover) */
-        button:hover {
-            background-color: #9d9d9d; /* Gris más claro */
-            color: #FFFFFF;
-            border-color: #FFFFFF; /* El borde también cambia a blanco */
-            box-shadow: inset 4px 4px 0px #cbcbcb, inset -4px -4px 0px #707070;
+        .btn-mc:hover {
+            background-color: #7da4ff; /* Azul cuando pasas el mouse */
+            color: #fff;
+            border-color: #fff;
+            box-shadow: inset 3px 3px 0px #c6d9ff, inset -3px -3px 0px #3b5ba5;
         }
 
-        /* Efecto al hacer clic (Active) */
-        button:active {
-            background-color: #555555; /* Gris más oscuro */
-            box-shadow: inset 4px 4px 0px #1a1a1a, inset -4px -4px 0px #555555;
-            transform: translateY(2px); /* Pequeño movimiento hacia abajo */
+        .btn-mc:active {
+            transform: scale(0.98);
         }
 
     </style>
@@ -163,29 +154,64 @@
 <body>
 
     <div class="video-container">
-        <!-- Usa el video descargado aquí -->
         <video autoplay muted loop playsinline>
             <source src="fondo1.mp4" type="video/mp4">
-            Tu navegador no soporta videos.
         </video>
     </div>
+    <div class="vignette"></div>
 
     <div class="overlay">
+        <div class="logo-container">
+            <h1 class="main-title">JARVIS OS</h1>
+            <div class="splash-text" id="splash">¡Programando!</div>
+        </div>
+
         <div class="login-card">
-            <h2>BIENVENIDO</h2>
-            <form>
+            <form id="loginForm">
                 <div class="form-group">
-                    <label>Usuario</label>
-                    <input type="text" placeholder="Ingresa tu usuario">
+                    <label>Nombre de Usuario</label>
+                    <input type="text" placeholder="..." required autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label>Contraseña</label>
-                    <input type="password" placeholder="••••••••">
+                    <input type="password" placeholder="..." required>
                 </div>
-                <button type="submit">INGRESAR</button>
+                <button type="submit" class="btn-mc" id="btnClick">Entrar al Mundo</button>
             </form>
         </div>
     </div>
 
+    <script>
+        // Mensajes aleatorios para el Splash Text
+        const splashes = ["¡Hola jgnurniu!", "100% Real No Fake", "Usando TinyLlama", "Full Stack Kids", "Crafteando código"];
+        document.getElementById('splash').innerText = splashes[Math.floor(Math.random() * splashes.length)];
+
+        // Sonido de click auténtico (Sintetizado para no necesitar archivos externos)
+        function playClickSound() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.1);
+        }
+
+        document.getElementById('btnClick').addEventListener('mousedown', playClickSound);
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert("Iniciando sesión en el servidor...");
+        });
+    </script>
 </body>
 </html>
