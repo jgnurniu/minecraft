@@ -2,16 +2,33 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Login Educakids</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Login</title>
+    
+    <!-- 1. IMPORTAR UNA FUENTE QUE SE PAREZCA A MINECRAFT -->
+    <!-- VT323 es una buena opción gratuita de Google Fonts que tiene ese toque pixelado -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
+            /* Aplicar la fuente pixelada a todo */
+            font-family: 'VT323', monospace;
+            /* Esto ayuda a que los textos pixelados se vean más nítidos */
+            image-rendering: pixelated; 
         }
 
-        /* Contenedor del video nativo */
+        body, html {
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        /* Contenedor del video nativo (sin cambios) */
         .video-container {
             position: fixed;
             top: 0;
@@ -20,97 +37,133 @@
             height: 100%;
             z-index: -1;
             overflow: hidden;
-            background-color: #000;
         }
 
         .video-container video {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Clave para que no se estire feo */
+            object-fit: cover;
         }
 
-        /* Overlay para oscurecer el video y que se lea el form */
+        /* Overlay para oscurecer el video (sin cambios) */
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.4); /* Un poco más claro para ver el video */
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* Tarjeta de Login (Efecto Glassmorphism) */
+        /* --- NUEVO DISEÑO DE LA TARJETA DE LOGIN ESTILO MINECRAFT --- */
         .login-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            /* Textura base: gris oscuro, pero con un borde doble pixelado */
+            background-color: #313131; /* Gris oscuro de fondo de menú */
+            border: 4px solid #000000; /* Borde exterior negro */
+            /* Efecto de borde biselado interior gris claro */
+            box-shadow: inset 4px 4px 0px #555555, inset -4px -4px 0px #1a1a1a;
+            
             padding: 2.5rem;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0; /* Minecraft no tiene bordes redondeados */
             width: 100%;
-            max-width: 400px;
-            color: white;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            max-width: 420px;
+            color: #AAAAAA; /* Gris claro de texto por defecto */
+            text-align: center;
         }
 
+        /* Título "BIENVENIDO" en el estilo de los títulos de Minecraft */
         .login-card h2 {
-            text-align: center;
+            color: #FFFFFF; /* Texto blanco puro */
+            text-shadow: 3px 3px 0px #3F3F3F; /* Sombra de texto pixelada */
+            font-size: 3.5rem; /* Muy grande */
             margin-bottom: 1.5rem;
-            font-size: 2rem;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .form-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
         }
 
+        /* Estilo para las etiquetas "Usuario" y "Contraseña" */
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-size: 1.4rem;
+            color: #AAAAAA;
+            text-shadow: 2px 2px 0px #1a1a1a;
         }
 
+        /* --- NUEVO DISEÑO DE LOS INPUTS ESTILO MINECRAFT --- */
         .form-group input {
             width: 100%;
             padding: 12px;
-            border: none;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
+            /* Borde pixelado oscuro */
+            border: 3px solid #000000;
+            box-shadow: inset 2px 2px 0px #1a1a1a; /* Sombra interior */
+            
+            border-radius: 0; /* Sin bordes redondeados */
+            background-color: #1a1a1a; /* Fondo muy oscuro */
+            color: #E0E0E0; /* Texto gris muy claro */
+            font-size: 1.4rem;
             outline: none;
         }
 
+        /* Estilo para el placeholder (Ingresa tu usuario) */
         .form-group input::placeholder {
-            color: #ccc;
+            color: #555555; /* Gris muy oscuro, como texto desactivado */
         }
 
+        /* Efecto al hacer foco en el input */
+        .form-group input:focus {
+            border-color: #FFFFFF; /* Borde blanco al seleccionar */
+        }
+
+        /* --- NUEVO DISEÑO DEL BOTÓN ESTILO MINECRAFT --- */
         button {
             width: 100%;
-            padding: 12px;
-            background: #fff;
-            color: #333;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1rem;
+            padding: 14px;
+            font-size: 1.6rem;
+            font-weight: normal; /* La fuente ya tiene peso */
+            color: #E0E0E0;
+            text-shadow: 2px 2px 0px #1a1a1a;
             cursor: pointer;
-            transition: 0.3s ease;
+            text-transform: uppercase;
+
+            /* El truco del botón de Minecraft: Fondo gris con bordes pixelados biselados */
+            background-color: #7d7d7d;
+            border: 4px solid #000000;
+            border-radius: 0;
+            box-shadow: inset 4px 4px 0px #aaaaaa, inset -4px -4px 0px #555555;
+            
+            transition: all 0.1s ease; /* Transición rápida */
         }
 
+        /* Efecto al pasar el mouse por encima (Hover) */
         button:hover {
-            background: #00d2ff;
-            color: white;
-            transform: translateY(-2px);
+            background-color: #9d9d9d; /* Gris más claro */
+            color: #FFFFFF;
+            border-color: #FFFFFF; /* El borde también cambia a blanco */
+            box-shadow: inset 4px 4px 0px #cbcbcb, inset -4px -4px 0px #707070;
         }
+
+        /* Efecto al hacer clic (Active) */
+        button:active {
+            background-color: #555555; /* Gris más oscuro */
+            box-shadow: inset 4px 4px 0px #1a1a1a, inset -4px -4px 0px #555555;
+            transform: translateY(2px); /* Pequeño movimiento hacia abajo */
+        }
+
     </style>
 </head>
 <body>
 
     <div class="video-container">
-        <!-- IMPORTANTE: Usa el video descargado aquí -->
+        <!-- Usa el video descargado aquí -->
         <video autoplay muted loop playsinline>
             <source src="fondo1.mp4" type="video/mp4">
             Tu navegador no soporta videos.
